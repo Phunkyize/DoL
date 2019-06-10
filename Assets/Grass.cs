@@ -18,9 +18,7 @@ public class Grass : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.GetType());
-        
-        
+       
         if (collision.CompareTag("Player"))
         {
             anim.SetTrigger("move");

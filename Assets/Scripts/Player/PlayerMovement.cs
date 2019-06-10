@@ -31,7 +31,10 @@ public class PlayerMovement : MonoBehaviour
     public Transform blinkRay5;
 
     //attack
-    public Transform attackPos;
+    public Transform attackPosHorizontal;
+    public Transform attackPosUp;
+    public Transform attackPosDown;
+    public Transform explosion;
     public LayerMask whatIsEnemies;
     public LayerMask whatIsBullet;
     public float attackRange;
@@ -39,7 +42,10 @@ public class PlayerMovement : MonoBehaviour
     public float xPushBack;
     public float yPushBack;
 
-    public string swordSwingSound= "swordSwing";
+    
+
+    
+
 
     //Caching
     AudioManager audioManager;
@@ -82,13 +88,18 @@ public class PlayerMovement : MonoBehaviour
     private float dashTimer;
     public float dashAnimTimer;
     public bool isDashing;
-
+    public float timeBetweenEchoSet;
+    public float timeBetweenEcho;
+    public GameObject echo;
+    private GameObject[] dashTrails=new GameObject[4];
+    public GameObject dashTrail;
     //camera shake
-    
+
 
     public Transform landSmoke;
     public Transform blinkSplash;
     public Transform swingAnim;
+
 
     
     // Start is called before the first frame update
@@ -106,10 +117,23 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPos.position, attackRange);
+        Gizmos.DrawWireSphere(attackPosUp.position, attackRange);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(attackPosDown.position, attackRange);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(attackPosHorizontal.position, attackRange);
+        
+    }
+
+    public enum AttackDir
+    {
+        Horizontal,
+        Up,
+        Down
     }
     // Update is called once per frame
     void Update()
@@ -118,14 +142,26 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.P))
         {
-            
+
             GameMaster.AddJumpPlayer(this);
             extraJumps = totalJumpsValue;
         }
 
+
         if (Input.GetKeyDown(KeyCode.I))
         {
-            Attack();
+            if (Input.GetAxisRaw("Vertical") > 0.5)
+            {
+                Attack(AttackDir.Up);
+            }
+            else if (Input.GetAxisRaw("Vertical") < -0.5)
+            {
+                Attack(AttackDir.Down);
+            }
+            else
+            {
+                Attack(AttackDir.Horizontal);
+            }
         }
 
 
@@ -137,8 +173,13 @@ public class PlayerMovement : MonoBehaviour
         }
         if (Input.GetButtonDown("Dash"))
         {
-
+            GameMaster.ShakeCamera();
+            audioManager.PlaySound("dash");
             isDashing = true;
+            Instantiate(dashTrail, new Vector3(transform.position.x-0.95f, transform.position.y - 1.76f, 0f), Quaternion.identity, this.transform);
+            Instantiate(dashTrail, new Vector3(transform.position.x-0.95f, transform.position.y - 0.86f, 0f), Quaternion.identity, this.transform);
+            Instantiate(dashTrail, new Vector3(transform.position.x - 0.95f, transform.position.y +0.05f, 0f), Quaternion.identity, this.transform);
+            Instantiate(dashTrail, new Vector3(transform.position.x - 0.95f, transform.position.y + 0.97f, 0f), Quaternion.identity, this.transform);
             //rb.velocity = new Vector2(lastAxis * dashSpeed, rb.velocity.y);
         }
         
@@ -207,13 +248,37 @@ public class PlayerMovement : MonoBehaviour
         {
             Dash();
             dashAnimTimer -= Time.deltaTime * 2;
+            
+            if (timeBetweenEcho <= 0)
+            {
+                
+                
+                if (facingRight)
+                {
+                    Instantiate(echo, transform.position, Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(echo, transform.position, Quaternion.Euler(0,180,0));
+                }
+                
+                timeBetweenEcho = timeBetweenEchoSet;
+            }
+            else
+            {
+                timeBetweenEcho -= Time.deltaTime;
+            }
 
             if (dashAnimTimer <= 0)
             {
+                timeBetweenEcho = 0;
                 dashAnimTimer = dashTimer;
                 isDashing = false;
                 animator.SetBool("dashing", false);
+                
+               
             }
+
         }
         else
         {
@@ -267,7 +332,6 @@ public class PlayerMovement : MonoBehaviour
     {
         
         animator.SetBool("dashing", true);
-       
         if (facingRight)
         {
             rb.AddForce(Vector2.right * dashSpeed*100);
@@ -485,17 +549,64 @@ public class PlayerMovement : MonoBehaviour
         return position;
     }
 
-    private void Attack()
+    private void Attack(AttackDir attackDir)
     {
-        audioManager.PlaySound(swordSwingSound);
-        Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
-        Collider2D[] bulletsHit = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsBullet);
+        audioManager.PlaySound("swordSwing");
+        Collider2D[] enemiesToDamage;
+        Collider2D[] bulletsHit;
+        if (attackDir == AttackDir.Horizontal)
+        {
+            enemiesToDamage = Physics2D.OverlapCircleAll(attackPosHorizontal.position, attackRange, whatIsEnemies);
+            bulletsHit = Physics2D.OverlapCircleAll(attackPosHorizontal.position, attackRange, whatIsBullet);
+            if (facingRight)
+            {
+                Instantiate(swingAnim, new Vector3(transform.position.x + 1.87F, transform.position.y + 0.47F, 1.0f), Quaternion.identity, this.transform);
+            }
+            else
+            {
+                Instantiate(swingAnim, new Vector3(transform.position.x - 1.87F, transform.position.y + 0.47F, 1.0f), Quaternion.identity, this.transform);
+            }
+        }
+        else if (attackDir == AttackDir.Up)
+        {
+            enemiesToDamage = Physics2D.OverlapCircleAll(attackPosUp.position, attackRange, whatIsEnemies);
+            bulletsHit = Physics2D.OverlapCircleAll(attackPosUp.position, attackRange, whatIsBullet);
+            if (facingRight)
+            {
+                Instantiate(swingAnim, new Vector3(transform.position.x, transform.position.y + 3.50F, 1.0f), Quaternion.Euler(0, 0, 90), this.transform);
+            }
+            else
+            {
+                Instantiate(swingAnim, new Vector3(transform.position.x, transform.position.y + 3.50F, 1.0f), Quaternion.Euler(0, 0, -90), this.transform);
+            }
+        }
+        else
+        {
+            enemiesToDamage = Physics2D.OverlapCircleAll(attackPosDown.position, attackRange, whatIsEnemies);
+            bulletsHit = Physics2D.OverlapCircleAll(attackPosDown.position, attackRange, whatIsBullet);
+            if (enemiesToDamage.Length > 0)
+            {
+                rb.AddForce(new Vector2(0, jumpForce*2), ForceMode2D.Impulse);
+            }
+            if (facingRight)
+            {
+                Instantiate(swingAnim, new Vector3(transform.position.x, transform.position.y - 3.50F, 1.0f), Quaternion.Euler(0, 0, -90), this.transform);
+            }
+            else
+            {
+                Instantiate(swingAnim, new Vector3(transform.position.x, transform.position.y - 3.50F, 1.0f), Quaternion.Euler(0, 0, 90), this.transform);
+            }
+        }
+
         animator.SetTrigger("attack");
         Rigidbody2D enemyRB;
-        Instantiate(swingAnim, new Vector3(transform.position.x + 1.87F, transform.position.y + 0.47F, 1.0f), Quaternion.identity, this.transform);
+        
         for (int i = 0; i < enemiesToDamage.Length; i++)
         {
             GameMaster.DamageEnemy(enemiesToDamage[i].GetComponent<Enemy>(), dmg);
+
+            
+            Instantiate(explosion, new Vector2(enemiesToDamage[i].transform.position.x + Random.Range(-0.2f, 0.2f), enemiesToDamage[i].transform.position.y + Random.Range(-0.2f, 0.2f)), Quaternion.identity);
            // enemiesToDamage[i].GetComponent<Enemy>().takeDamage(dmg);
             enemyRB = enemiesToDamage[i].GetComponent<Rigidbody2D>();
 
@@ -515,7 +626,7 @@ public class PlayerMovement : MonoBehaviour
         }
         for(int i=0; i < bulletsHit.Length; i++)
         {
-            Debug.Log("????: "+i);
+            
             Arrow arrow = bulletsHit[i].GetComponent<Arrow>();
             if (arrow != null)
             {

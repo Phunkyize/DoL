@@ -15,6 +15,7 @@ public class Jumping_jack : Enemy
     public float distance;
     private BoxCollider2D bc;
     
+    
    
     // Start is called before the first frame update
 
@@ -47,23 +48,28 @@ public class Jumping_jack : Enemy
     }
     private void FixedUpdate()
     {
-        if (timeBetweenJumpsTimer <= 0)
+        if (stats.stunAfterAttackTimer > 0)
         {
-            Jump();
+
+            stats.stunAfterAttackTimer -= Time.deltaTime;
+
         }
         else
         {
-            timeBetweenJumpsTimer -= Time.deltaTime;
+            if (timeBetweenJumpsTimer <= 0)
+            {
+                Jump();
+            }
+            else
+            {
+                timeBetweenJumpsTimer -= Time.deltaTime;
+            }
         }
     }
     // Update is called once per frame
     void Update()
     {
-        
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-           
-        }
+  
     }
 
     private void Jump()
@@ -97,8 +103,5 @@ public class Jumping_jack : Enemy
     }
 
 
-    public override void getStunned()
-    {
-        
-    }
+   
 }

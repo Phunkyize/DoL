@@ -34,7 +34,7 @@ public class zombieEnemy : Enemy
     private float lostSightTimer;
     public float lostSightSetTimer=2;
     
-    private float stunAfterAttackTimer;
+    
     public float freezeAfterAttackSetTimer;
     private float freezeAfterAttackTimer;
     
@@ -65,9 +65,9 @@ public class zombieEnemy : Enemy
     private void FixedUpdate()
     {
         //Debug.Log(enemyState);
-        if (stunAfterAttackTimer > 0)
+        if (stats.stunAfterAttackTimer > 0)
         {
-            stunAfterAttackTimer -= Time.deltaTime;
+            stats.stunAfterAttackTimer -= Time.deltaTime;
         }
         else
         {
@@ -255,39 +255,9 @@ public class zombieEnemy : Enemy
                 break;
         }
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-
-        if (collision.transform.tag == "Player")
-        {
-            base.attackPlayer(player);
-            foreach (ContactPoint2D hit in collision.contacts)
-            {
-                if (hit.collider.GetComponent<Player>() != null)
-                {
-                    if (hit.point.x > transform.position.x)
-                    {
-                        rb.velocity = new Vector2(0, 0);
-                        rb.velocity = new Vector2(rb.velocity.x - jumpBack, rb.velocity.y + jumpForce);
-                    }
-                    else
-                    {
-                        rb.velocity = new Vector2(0, 0);
-                        rb.velocity = new Vector2(rb.velocity.x + jumpBack, rb.velocity.y + jumpForce);
-                    }
-                    break;
-                }
-
-            }    
-        }
-    }
     
-    public override void getStunned()
-    {
-        stunAfterAttackTimer = base.stats.stunAfterAttackTime;
-
-    }
+    
+    
 
 
 

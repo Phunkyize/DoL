@@ -26,7 +26,7 @@ public class Archer : Enemy
     public Arrow arrow;
     private Player player;
     private Vector3 horizontalForAngle;
-    private float stunAfterAttackTimer;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -42,9 +42,9 @@ public class Archer : Enemy
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (stunAfterAttackTimer > 0)
+        if (stats.stunAfterAttackTimer > 0)
         {
-            stunAfterAttackTimer -= Time.deltaTime;
+            stats.stunAfterAttackTimer -= Time.deltaTime;
         }
         else
         {
@@ -295,10 +295,7 @@ public class Archer : Enemy
         return sign * angle;
     }
     */
-    public override void getStunned()
-    {
-        stunAfterAttackTimer = base.stats.stunAfterAttackTime;
-    }
+    
     
 
 }

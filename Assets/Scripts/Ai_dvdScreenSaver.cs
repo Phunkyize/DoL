@@ -44,11 +44,16 @@ public class Ai_dvdScreenSaver : Enemy
     }
     private void FixedUpdate()
     {
-        xTimer = transform.position.x;
-        transform.Translate(ArrayOfDirections[pivot] * speed * Time.deltaTime);
-        timer += Time.deltaTime;
-        
-
+        if (stats.stunAfterAttackTimer < 0)
+        {
+            stats.stunAfterAttackTimer -= Time.deltaTime;
+        }
+        else
+        {
+            xTimer = transform.position.x;
+            transform.Translate(ArrayOfDirections[pivot] * speed * Time.deltaTime);
+            timer += Time.deltaTime;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -142,10 +147,7 @@ public class Ai_dvdScreenSaver : Enemy
         transform.localScale = Scaler;
     }
 
-    public override void getStunned()
-    {
-        
-    }
+    
 
 
 }

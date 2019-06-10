@@ -54,13 +54,16 @@ public class Worm : Enemy
     // Update is called once per frame
     void Update()
     {
+        if (stats.stunAfterAttackTimer > 0)
+        {
+            wormState = WormState.Confused;
+            stats.stunAfterAttackTimer -= Time.deltaTime;
+        }
         enemi_ai();
+        
     }
 
-    public override void getStunned()
-    {
-        wormState = WormState.Confused;
-    }
+   
 
    private void enemi_ai()
     {
