@@ -32,13 +32,15 @@ public class Sound
 
     public void Play()
     {
-        source.volume = volume * (1+Random.Range(-randomVolume/2f, randomVolume/2f));
-        source.pitch = pitch*(1+Random.Range(-randomPitch/2f, randomPitch/2f));
-        source.Play();
+        this.source.volume = volume * (1+Random.Range(-randomVolume/2f, randomVolume/2f));
+        
+        this.source.pitch = pitch*(1+Random.Range(-randomPitch/2f, randomPitch/2f));
+        
+        this.source.Play();
     }
     
     public void Stop()
     {
-        source.Stop();
+        this.source.Stop();
     }
 }

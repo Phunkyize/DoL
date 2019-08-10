@@ -5,7 +5,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager instance;
 
     [SerializeField]
-    private Sound[] sounds;
+    private Sound[] sounds=null;
 
     private void Awake()
     {
@@ -13,34 +13,41 @@ public class AudioManager : MonoBehaviour
         {
             if (instance != this)
             {
-                Destroy(this.gameObject);
+                Destroy(gameObject);
             }
             Debug.LogError("More then one AudioManger in scene");
         }
         else
         {
             instance = this;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
+        }
+
+        for (int i = 0; i < sounds.Length; i++)
+        {
+            GameObject _go = new GameObject("Sound_" + i + "_" + sounds[i].name);
+            _go.transform.SetParent(this.transform);
+            sounds[i].setSource(_go.AddComponent<AudioSource>());
+           
         }
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        for(int i=0; i < sounds.Length; i++)
-        {
-            GameObject _go = new GameObject("Sound_" + i + "_" + sounds[i].name);
-            sounds[i].setSource(_go.AddComponent<AudioSource>());
-        }
-        PlaySound("music");
+       
+        //PlaySound("music");
+        
     }
 
     public void PlaySound(string _name)
     {
         for(int i=0; i < sounds.Length; i++)
         {
+            
             if (sounds[i].name == _name)
             {
+                
                 sounds[i].Play();
                 return;
             }
@@ -59,6 +66,14 @@ public class AudioManager : MonoBehaviour
                 sounds[i].Stop();
                 return;
             }
+        }
+    }
+
+    public void StopAll()
+    {
+        foreach(Sound sound in sounds)
+        {
+            sound.Stop();
         }
     }
 

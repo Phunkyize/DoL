@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7419714742109664732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4741509412191169763}
+  - component: {fileID: 6509079968996660119}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4741509412191169763
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419714742109664732}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6509079968996660119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7419714742109664732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21bcb0c13f379784891a1cc8677961c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: music
+    clip: {fileID: 8300000, guid: bd4db834854361f48b31f0d232bd95f1, type: 3}
+    volume: 0.4
+    pitch: 1
+    randomVolume: 0
+    randomPitch: 0
+    loop: 1
+  - name: swordSwing
+    clip: {fileID: 8300000, guid: 49059f89e982b624799577a62f59f654, type: 3}
+    volume: 0.5
+    pitch: 1
+    randomVolume: 0.2
+    randomPitch: 0.2
+    loop: 0
+  - name: lightbulbSmash
+    clip: {fileID: 8300000, guid: 054d274e3136336439e4cc5603815215, type: 3}
+    volume: 0.5
+    pitch: 1
+    randomVolume: 0.2
+    randomPitch: 0.2
+    loop: 0
+  - name: dash
+    clip: {fileID: 8300000, guid: 7caf077221d3ef640a46fe46ddafae0e, type: 3}
+    volume: 0.5
+    pitch: 1
+    randomVolume: 0.2
+    randomPitch: 0.2
+    loop: 0

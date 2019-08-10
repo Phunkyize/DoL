@@ -7,6 +7,9 @@ TagManager:
   - GM
   - Terrain
   - Enemy
+  - Camera1
+  - CheckPoint
+  - MovingPlatform
   layers:
   - Default
   - TransparentFX

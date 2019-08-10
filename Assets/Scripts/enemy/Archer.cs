@@ -63,7 +63,7 @@ public class Archer : Enemy
 
     private void Flip()
     {
-        Debug.Log("FLIP");
+        
         startPosition = transform.position;
         speed = speed * -1;
         facingRight = !facingRight;
@@ -76,24 +76,32 @@ public class Archer : Enemy
 
     private bool isPlayerSeen()
     {
-        
-        RaycastHit2D hitInfo = Physics2D.Raycast(shootingPos.position, player.transform.position-shootingPos.position, patrolFOVdistance, ~arrowLayerMask);
-        
-        
-        if (hitInfo.collider != null)
+        if (player != null)
         {
-            bool result = hitInfo.collider.gameObject.CompareTag("Player");
-            if (result)
+            RaycastHit2D hitInfo = Physics2D.Raycast(shootingPos.position, player.transform.position - shootingPos.position, patrolFOVdistance, ~arrowLayerMask);
+
+
+
+            if (hitInfo.collider != null)
             {
-                if ((facingRight && (player.transform.position.x < transform.position.x)) || (!facingRight && (player.transform.position.x > transform.position.x)))
+                bool result = hitInfo.collider.gameObject.CompareTag("Player");
+                if (result)
                 {
-                   // Debug.Log("Player flow");
-                    Flip();
+                    if ((facingRight && (player.transform.position.x < transform.position.x)) || (!facingRight && (player.transform.position.x > transform.position.x)))
+                    {
+                        // Debug.Log("Player flow");
+                        Flip();
+                    }
                 }
+                return result;
             }
-            return result;
+            else
+            {
+                return false;
+            }
         }
-        else {
+        else
+        {
             return false;
         }
         
