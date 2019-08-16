@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
+
 
 
 public class GameMaster : MonoBehaviour
 {
-    
+
     public static GameMaster gm;
     public GameObject selectedButton;
     public GameObject deathCanvas;
 
-    
+
     private Player player;
     private PlayerMovement playerMovement;
 
@@ -22,7 +22,7 @@ public class GameMaster : MonoBehaviour
     //camera
     private bool CameraOneOn = true;
     public Cinemachine.CinemachineVirtualCamera vcam1;
-    
+
     public Cinemachine.CinemachineTargetGroup group;
 
     // public CinemachineCameraShaker cameraShake;
@@ -30,29 +30,29 @@ public class GameMaster : MonoBehaviour
     public float cameraShakeBlinkDuration;
 
     //Damage
-    
+
     public Transform enemyDeathParticles;
     public float invulnerabilityTimerSet;
-    
-    
+
+
 
     //AudioManger
-    private AudioManager audioManager=AudioManager.instance;
+    private AudioManager audioManager = AudioManager.instance;
 
     public GameObject dialogTest;
 
     //SceneManager
     private Scene currentScene;
-   
+
 
     private void Awake()
     {
- 
+
     }
 
     private void Start()
     {
-       
+
         if (gm == null)
         {
             gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
@@ -75,7 +75,7 @@ public class GameMaster : MonoBehaviour
 
 
         Scene currentScene = SceneManager.GetActiveScene();
-        
+
     }
 
     void Update()
@@ -94,26 +94,24 @@ public class GameMaster : MonoBehaviour
             if (dialogTest.activeSelf == true)
             {
                 dialogTest.SetActive(false);
-                playerMovement.MovementEnabled = true;
+                _EnablePlayerMovement(true);
 
             }
             else
             {
                 dialogTest.SetActive(true);
-                playerMovement.MovementEnabled = false;
-                EventSystem.current.SetSelectedGameObject(selectedButton);
-
+                _EnablePlayerMovement(false);
 
             }
-            
-            
+
+
         }
         if (player == null)
         {
             player = FindObjectOfType<Player>();
             playerMovement = player.GetComponent<PlayerMovement>();
         }
-       
+
     }
 
     private void FixedUpdate()
@@ -149,10 +147,10 @@ public class GameMaster : MonoBehaviour
         Debug.Log(Time.timeScale);
     }
 
-   
+
     public static void DamageEnemy(Enemy enemy, int dmg)
     {
-        gm._DamageEnemy(enemy,dmg);
+        gm._DamageEnemy(enemy, dmg);
     }
 
     private void _DamageEnemy(Enemy enemy, int dmg)
@@ -188,10 +186,10 @@ public class GameMaster : MonoBehaviour
         gm._KillEnemy(enemy);
 
     }
-   
+
     private void _KillEnemy(Enemy enemy)
     {
-        Instantiate(enemyDeathParticles, enemy.transform.position, Quaternion.Euler(-90,0,0));
+        Instantiate(enemyDeathParticles, enemy.transform.position, Quaternion.Euler(-90, 0, 0));
         Destroy(enemy.gameObject);
     }
 
@@ -201,18 +199,18 @@ public class GameMaster : MonoBehaviour
     }
     private void _ShakeCamera()
     {
-            vcam1.GetComponent< CinemachineCameraShaker>().ShakeCamera(cameraShakeDuration);
+        vcam1.GetComponent<CinemachineCameraShaker>().ShakeCamera(cameraShakeDuration);
     }
 
     public static void BlinkShake()
     {
-       
+
         gm._BlinkShake();
     }
 
     private void _BlinkShake()
     {
-           vcam1.GetComponent<CinemachineCameraShaker>().ShakeCamera(cameraShakeBlinkDuration);
+        vcam1.GetComponent<CinemachineCameraShaker>().ShakeCamera(cameraShakeBlinkDuration);
     }
 
     public static void PlaySound(string sound)
@@ -238,7 +236,7 @@ public class GameMaster : MonoBehaviour
         if (nextLevel == "Scene1")
         {
             PlaySound("music");
-          
+
 
         }
         else if (nextLevel == "Escape")
@@ -246,10 +244,10 @@ public class GameMaster : MonoBehaviour
             audioManager.StopAll();
             PlaySound("escape");
             player.transform.position = new Vector3(-200f, -3.1f, 0f);
-           
 
 
-        } 
+
+        }
     }
     void OnEnable()
     {
@@ -258,7 +256,7 @@ public class GameMaster : MonoBehaviour
     }
     void OnLevelFinishedLoading(Scene scene, LoadSceneMode mode)
     {
-        
+
         vcam1 = FindObjectOfType<Cinemachine.CinemachineVirtualCamera>();
         player = FindObjectOfType<Player>();
         Transform lookUp = null;
@@ -285,7 +283,7 @@ public class GameMaster : MonoBehaviour
         }
         if (isLoading)
         {
-            
+
             player.transform.position = new Vector3(saveData.position[0], saveData.position[1], saveData.position[2]);
             player.playerStats = saveData.stats;
             isLoading = false;
@@ -293,7 +291,7 @@ public class GameMaster : MonoBehaviour
 
     }
 
- 
+
     public static void LookUp(float weight)
     {
         gm._LookUp(weight);
@@ -303,7 +301,7 @@ public class GameMaster : MonoBehaviour
     {
         group.m_Targets[1].weight = weight;
     }
-   
+
 
     public static void LookDown(float weight)
     {
@@ -346,6 +344,27 @@ public class GameMaster : MonoBehaviour
         gm._LoadScene(data.scene);
     }
 
+    public static void EnablePlayerMovement(bool enable)
+    {
+        gm._EnablePlayerMovement(enable);
+
+    }
+
+    private void _EnablePlayerMovement(bool enable)
+    {
+        if (enable)
+        {
+            playerMovement.MovementEnabled = true;
+ 
+        }
+        else
+        {
+            playerMovement.MovementEnabled = false;
+            playerMovement.animator.SetFloat("speed", -1);
+            playerMovement.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+            playerMovement.animator.SetTrigger("Dialogue");
+        }
+    }
 
 
 }

@@ -239,7 +239,7 @@ public class PlayerMovement : MonoBehaviour
                 Instantiate(dashTrail, new Vector3(transform.position.x - 0.95f, transform.position.y + 0.97f, 0f), Quaternion.identity, this.transform);
             }
         }
-
+        
     }
 
     private void FixedUpdate()
@@ -363,7 +363,7 @@ public class PlayerMovement : MonoBehaviour
             }
 
             //setting velocities for animation
-            animator.SetFloat("speed", Mathf.Abs(moveInput * speed));
+            
             animator.SetFloat("fallSpeed", rb.velocity.y);
 
 
@@ -425,7 +425,6 @@ public class PlayerMovement : MonoBehaviour
                     isDashing = false;
                     animator.SetBool("dashing", false);
 
-
                 }
 
             }
@@ -439,6 +438,8 @@ public class PlayerMovement : MonoBehaviour
                 else
                 {
                     moveInput = Input.GetAxisRaw("Horizontal"); //GetAxisRaw
+                    animator.SetFloat("speed", Mathf.Abs(moveInput * speed));
+                    Debug.Log(Mathf.Abs(moveInput * speed));
                     if (moveInput != 0 && isGrounded)
                     {
                         if (groundSmokeTimer <= 0)
