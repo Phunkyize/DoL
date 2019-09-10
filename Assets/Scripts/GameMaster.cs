@@ -20,7 +20,7 @@ public class GameMaster : MonoBehaviour
     private SaveData saveData;
 
     //camera
-    private bool CameraOneOn = true;
+    
     public Cinemachine.CinemachineVirtualCamera vcam1;
 
     public Cinemachine.CinemachineTargetGroup group;
@@ -80,15 +80,7 @@ public class GameMaster : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Time.timeScale = 0f;
-        }
-
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            Time.timeScale = 1f;
-        }
+        
         if (Input.GetKeyDown(KeyCode.P))
         {
             if (dialogTest.activeSelf == true)
@@ -109,7 +101,10 @@ public class GameMaster : MonoBehaviour
         if (player == null)
         {
             player = FindObjectOfType<Player>();
-            playerMovement = player.GetComponent<PlayerMovement>();
+            if (player != null)
+            {
+                playerMovement = player.GetComponent<PlayerMovement>();
+            }
         }
 
     }
@@ -366,5 +361,42 @@ public class GameMaster : MonoBehaviour
         }
     }
 
+    public static void SpearDestroyed()
+    {
+        gm._SpearDestroyed();
+    }
+
+    private void _SpearDestroyed()
+    {
+        playerMovement.SpearDestroyed();
+    }
+
+    public static void SetCameraAbyssChase(Cinemachine.CinemachineVirtualCamera vcam2)
+    {
+        gm._SetCameraAbyssChase(vcam2);
+    }
+
+    private void _SetCameraAbyssChase(Cinemachine.CinemachineVirtualCamera vcam2)
+    {
+        vcam1.gameObject.SetActive(false);
+        vcam1 = vcam2;
+        vcam1.gameObject.SetActive(true);
+        
+        
+        
+    }
+
+
+    /*
+    public static void CanTeleportToSpear(bool can)
+    {
+        gm._CanTeleportToSpear(can);
+    }
+
+    private void _CanTeleportToSpear(bool can)
+    {
+        playerMovement.setCanTeleportToSpear(can);
+    }
+    */
 
 }

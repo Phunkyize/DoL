@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 
+    public GameObject[] Unflipable;
     //PlayerMovementSwitch
     public bool MovementEnabled = true;
 
@@ -88,7 +89,14 @@ public class PlayerMovement : MonoBehaviour
     public float blinkSetTimer;
     public float invulFrames;
     public float invulFramesSetTimer;
-    
+
+    //spearThrow
+    public GameObject aimArrow;
+    public GameObject SpearContainer;
+    private GameObject Spear;
+    private bool aiming;
+    private bool spearAvailable;
+    private GameObject SpearInstance;
 
 
     //ground stuff
@@ -165,6 +173,8 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.LogError("No AudioManager found");
         }
+        
+
     }
 
     
@@ -238,6 +248,45 @@ public class PlayerMovement : MonoBehaviour
                 Instantiate(dashTrail, new Vector3(transform.position.x - 0.95f, transform.position.y + 0.05f, 0f), Quaternion.identity, this.transform);
                 Instantiate(dashTrail, new Vector3(transform.position.x - 0.95f, transform.position.y + 0.97f, 0f), Quaternion.identity, this.transform);
             }
+
+            if (Input.GetButtonDown("Aim"))
+            {
+                Time.timeScale = 0.5f;
+                aimArrow.SetActive(true);
+                aiming = true;
+            }
+
+            if(Input.GetButtonUp("Aim"))
+            {
+                
+                Time.timeScale = 1f;
+                aimArrow.SetActive(false);
+                aiming = false;
+            }
+
+            if(aiming && Input.GetButtonDown("Shoot")&& !spearAvailable)
+            {
+                SpearInstance = Instantiate(SpearContainer, this.transform.position, Quaternion.identity);
+                Spear = SpearInstance.transform.GetChild(0).gameObject;
+                Spear.transform.localRotation = Quaternion.Euler(0, 0, aimArrow.transform.eulerAngles.z);
+
+                spearAvailable = true;
+                //Spear.SetActive(true);
+            }
+
+            if(aiming && Input.GetButtonDown("Shoot") && spearAvailable)
+            {
+                Spear.transform.localRotation = Quaternion.Euler(0, 0, aimArrow.transform.eulerAngles.z);
+            }
+
+            if(!aiming && Input.GetButtonDown("Shoot") && spearAvailable)
+            {
+                
+                transform.position = Spear.transform.position;
+                Destroy(SpearInstance.gameObject);
+                spearAvailable = false;
+            }
+
         }
         
     }
@@ -439,7 +488,7 @@ public class PlayerMovement : MonoBehaviour
                 {
                     moveInput = Input.GetAxisRaw("Horizontal"); //GetAxisRaw
                     animator.SetFloat("speed", Mathf.Abs(moveInput * speed));
-                    Debug.Log(Mathf.Abs(moveInput * speed));
+                    
                     if (moveInput != 0 && isGrounded)
                     {
                         if (groundSmokeTimer <= 0)
@@ -546,11 +595,18 @@ public class PlayerMovement : MonoBehaviour
             Scaler.x *= -1;
             transform.localScale = Scaler;
 
+            foreach (GameObject g in Unflipable)
+            {
+                if (g.name != "CameraPush")
+                {
 
-            Vector3 Scaler2 = canvas.transform.localScale;
-            Scaler2.x *= -1;
-
-            canvas.transform.localScale = Scaler2;
+                    Debug.Log(g.name);
+                    Vector3 Scaler2 = g.transform.localScale;
+                    Scaler2.x *= -1;
+                    g.transform.localScale = Scaler2;
+                }
+                
+            }
             //flashLight2.GetChild(0).transform.localScale = new Vector3(Scaler2.x/Mathf.Abs(Scaler2.x), 1, 1);
         }
 
@@ -972,6 +1028,17 @@ public class PlayerMovement : MonoBehaviour
     public void setTotalJumps(int totalJumps)
     {
         this.totalJumpsValue = totalJumps;
+    }
+
+    /*
+    public void setCanTeleportToSpear(bool can)
+    {
+        this.canTeleportToSpear = can;
+    }
+    */
+    public void SpearDestroyed()
+    {
+        spearAvailable = false;
     }
 
 }

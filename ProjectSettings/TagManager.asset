@@ -10,6 +10,7 @@ TagManager:
   - Camera1
   - CheckPoint
   - MovingPlatform
+  - DialogueManager
   layers:
   - Default
   - TransparentFX

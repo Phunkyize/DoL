@@ -5,19 +5,14 @@ using UnityEngine.UI;
 
 public class DialogueTrigger : MonoBehaviour
 {
-    public Button OtherDialogOption;
-  
-    public DialogueLine[] dialogue;
-    // Start is called before the first frame update
-    private void OnTriggerEnter2D(Collider2D collision)
+    public Button speachBubble;
+
+    public void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            DialogueManager.instance.StartDialogue(dialogue, OtherDialogOption);
-            Destroy(this.gameObject);
+            DialogueManager.instance.StartDialogue(speachBubble);
         }
     }
 
-    
 }
-

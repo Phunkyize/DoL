@@ -6,13 +6,14 @@ public class FlashLight : MonoBehaviour
 {
     // Start is called before the first frame update
     public Camera mainCam;
+    public int rotation;
     Vector3 mouseScreen;
     Vector3 mouse;
     private Transform childLight;
     private float moveInput;
     void Start()
     {
-        //childLight = transform.GetChild(0);
+        
        
     }
 
@@ -21,7 +22,7 @@ public class FlashLight : MonoBehaviour
     {
         mouseScreen = Input.mousePosition;
         mouse = mainCam.ScreenToWorldPoint(mouseScreen);
-        transform.rotation = Quaternion.Euler(0,0, Mathf.Atan2(mouse.y - transform.position.y, mouse.x - transform.position.x) * Mathf.Rad2Deg+90);
+        transform.rotation = Quaternion.Euler(0,0, Mathf.Atan2(mouse.y - transform.position.y, mouse.x - transform.position.x) * Mathf.Rad2Deg+rotation);
 
         //childLight.rotation = transform.rotation;
         /*

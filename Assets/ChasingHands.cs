@@ -40,4 +40,10 @@ public class ChasingHands : MonoBehaviour
             GameMaster.DamagePlayer(100);
         }
     }
+
+    public void Activate(float speedClose, float speedFar)
+    {
+        speed = speedClose;
+        speed2 = speedFar;
+    }
 }
