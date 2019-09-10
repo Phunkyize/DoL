@@ -11,6 +11,7 @@ public class FlashLight : MonoBehaviour
     Vector3 mouse;
     private Transform childLight;
     private float moveInput;
+    private Quaternion lastRot;
     void Start()
     {
         
@@ -19,19 +20,21 @@ public class FlashLight : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
+    {/*
         mouseScreen = Input.mousePosition;
         mouse = mainCam.ScreenToWorldPoint(mouseScreen);
         transform.rotation = Quaternion.Euler(0,0, Mathf.Atan2(mouse.y - transform.position.y, mouse.x - transform.position.x) * Mathf.Rad2Deg+rotation);
-
-        //childLight.rotation = transform.rotation;
-        /*
-        if (Input.GetAxisRaw("HorizontalLeft") != 0 && Input.GetAxisRaw("VerticalLeft") != 0)
-        {
-            transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(Input.GetAxisRaw("HorizontalLeft"), Input.GetAxisRaw("VerticalLeft")) * Mathf.Rad2Deg);
-            childLight.rotation = transform.rotation;
-        }
         */
+        //childLight.rotation = transform.rotation;
+        
+        if (Input.GetAxisRaw("HorizontalLeft") != 0 || Input.GetAxisRaw("VerticalLeft") != 0)
+        {
+            lastRot = Quaternion.Euler(0, 0, Mathf.Atan2(Input.GetAxisRaw("HorizontalLeft"), Input.GetAxisRaw("VerticalLeft")) * Mathf.Rad2Deg);
+           
+            //childLight.rotation = transform.rotation;
+        }
+        transform.rotation = lastRot;
+
     }
 
 

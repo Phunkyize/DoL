@@ -18,6 +18,7 @@ public class AbyssHandsCameraTrigger : MonoBehaviour
             {
                 GameMaster.SetCameraAbyssChase(vcam2);
                 abyssHands.Activate(15f, 20f);
+                GameMaster.PlaySound("escape");
                 Destroy(this.gameObject);
             }
         }
